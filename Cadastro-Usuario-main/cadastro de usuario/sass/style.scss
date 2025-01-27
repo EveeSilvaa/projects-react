@@ -1,0 +1,35 @@
+// Variáveis de cor
+$primary-color: #47a7e7;
+$background-color: #f0f8ff;
+$white-color: #ffffff;
+
+// Estilos gerais
+body {
+    background-color: $background-color;
+}
+
+.form-container {
+    background-color: $white-color;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+}
+
+.form-title {
+    font-weight: bold;
+    color: $primary-color;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: $primary-color;
+    border: none;
+
+    &:hover {
+        background-color: darken($primary-color, 10%);
+    }
+}

@@ -1,14 +1,18 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CurrentWeather from "./components/CurrentWeather";
 import SearchSection from "./components/SearchSection";
 import HourlyWeatherItem from "./components/HourlyWeatherItem";
+import NoResultsDiv from "./components/NoResultsDiv";
 import { weatherCodes } from "./constants";
 
+
 const App = () => {
+  const API_KEY = import.meta.env.VITE_API_KEY;
+
   const [currentWeather, setCurrentWeather] = useState({});
   const [hourlyForecasts, setHourlyForecasts] = useState([]);
   const [hasNoResults, setHasNoResults] = useState(false);
-  const searchInputref = useRef(null);
+  const searchInputRef = useRef(null);
 
 
   const filterHourlyForecast = (HourlyData) => {
@@ -27,6 +31,7 @@ const App = () => {
   //Busca detalhes meteorológicos com base no URL da API
   const getWeatherDeatails = async (API_URL) => {
     setHasNoResults(false);
+    window.innerWidth <= 768 && searchInputRef.current.focus();
 
     try {
       const response = await fetch(API_URL);
@@ -46,7 +51,7 @@ const App = () => {
       forecastday[1].hour];
 
 
-      searchInputref.current.value = data.location.name;
+      searchInputRef.current.value = data.location.name;
       filterHourlyForecast(combinedHourlyData);
     } catch {
       //definir o estado sethasnoresults se houver um erro
@@ -54,33 +59,26 @@ const App = () => {
     }
   };
 
+  // busca detalhes meteorológicos para a cidade padrão
+  useEffect(() => {
+    const defaultCity = "London"; // cidade padrão
+    const API_URL = `http://api.weatherapi.com/v1/forecast.json?
+    key=${API_KEY}&q=${defaultCity}&days=2`;
+    getWeatherDeatails(API_URL);
+  }, []);
+
 
   return (
     <div className="container">
      {/* seção de pesquisa */}
-    <SearchSection getWeatherDeatails={getWeatherDeatails} searchInputref={searchInputref} />
+    <SearchSection getWeatherDeatails={getWeatherDeatails} searchInputRef={searchInputRef} />
 
      {/* renderização condicional com base no estado hasNoResults */}
-    {hasNoResults ? (
+    
+     {hasNoResults ? (
       <NoResultsDiv />
-    ) : (
+     ) : (
       <div className="weather-section">
-        <CurrentWeather currentWeather={currentWeather}/>
-
-      {/* lista de previsão do tempo por hora */}
-      <div className="hourly-forecast">
-        <ul className="weather-list">
-         {hourlyForecasts.map((hourlyWeather) => (
-           <HourlyWeatherItem key={hourlyWeather.time_epoch} hourlyWeather={hourlyWeather} />
-      ))}
-      </ul>
-    </div>
-  </div>
-    )
-  }
-
-    {/* seção de pesquisa */}
-    <div className="weather-section">
       <CurrentWeather currentWeather={currentWeather}/>
 
     {/* lista de previsão do tempo por hora */}
@@ -92,6 +90,7 @@ const App = () => {
         </ul>
       </div>
     </div>
+     )}  
   </div>
   );
 };
