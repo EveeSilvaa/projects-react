@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
 import CurrentWeather from "./components/CurrentWeather";
 import SearchSection from "./components/SearchSection";
@@ -62,8 +63,7 @@ const App = () => {
   // busca detalhes meteorológicos para a cidade padrão
   useEffect(() => {
     const defaultCity = "London"; // cidade padrão
-    const API_URL = `http://api.weatherapi.com/v1/forecast.json?
-    key=${API_KEY}&q=${defaultCity}&days=2`;
+    const API_URL = `http://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${defaultCity}&days=2`;
     getWeatherDeatails(API_URL);
   }, []);
 
